@@ -5,15 +5,17 @@ session_start();
 if($_SESSION["admin"] != True) {
 	header("Location: /login.php?fail=true");
 } else {
-	var_dump($_POST["action"]);
-	var_dump($_POST["id"]);
-	if($_POST["action"] == "delete") {
-		$sql = "DELETE FROM products WHERE id=".$_POST["id"];
+	//var_dump($_POST["action"]);
+	//var_dump($_POST["id"]);
+	$action = clean($_POST["action"]);
+	$id = (int)$_POST["id"];
+	if($action == "delete") {
+		$sql = "DELETE FROM products WHERE id=".$id;
 		$conn->query($sql);
 		header("Location: /admin.php");
 	}
-	if($_POST["action"] == "edit") {
-		$sql = 'SELECT id, name, price, description FROM products WHERE id='.$_POST["id"];
+	if($action == "edit") {
+		$sql = 'SELECT id, name, price, description FROM products WHERE id='.$id;
 		$product = array();
 		//var_dump($products);
 		foreach ($conn->query($sql) as $row) {
@@ -26,7 +28,7 @@ if($_SESSION["admin"] != True) {
 		}
 		var_dump($product);
 	} 
-	if($_POST["action"] == "add_new") {
+	if($action == "add_new") {
 		$product['id'] = "";
 		$product['name'] = "";
 		$product['price'] = "";

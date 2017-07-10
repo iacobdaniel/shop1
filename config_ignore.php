@@ -1,5 +1,11 @@
 <?php
 
+function clean($string) {
+   $string = str_replace(' ', '-', $string); // Replaces all spaces with hyphens.
+
+   return preg_replace('/[^A-Za-z0-9\-]/', '', $string); // Removes special chars.
+}
+
 define('DB_SERVER',"db_server");
 define('DB_USERNAME',"db_username");
 define('DB_USER_PASS',"db_user_pass");

@@ -1,15 +1,22 @@
 <?php
-echo "string";
-
 //var_dump($_POST['ordered_products']);
 //var_dump($_POST['client']);
 //var_dump($_POST['email']);
 //var_dump($_POST['details']);
 
-$products = $_POST['ordered_products'];
-$client = $_POST['client'];
+include_once('config.php');
+
+session_start();
+
+$products = clean($_POST['ordered_products']);
+$client = clean($_POST['client']);
+$details = clean($_POST['details']);
 $client_email = $_POST['email'];
-$details = $_POST['details'];
+if(!filter_var($client_email, FILTER_VALIDATE_EMAIL)) {
+	header("Location: /mail_fail.php");
+}
+
+
 
 $to = "admin@shop1.local.com";
 $subject = "New Order";

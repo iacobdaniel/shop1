@@ -11,18 +11,19 @@ session_start();
 //var_dump($_SESSION);
 //var_dump($_POST);
 if (!empty($_POST)) {
+	$post_id = (int)$_POST["id"];
 	if($_POST["action"] == "add") {
 		if($_SESSION["cart"] == "") {
-			$_SESSION["cart"] = $_POST["id"];
+			$_SESSION["cart"] = $post_id;
 		} else {
 			$prod_ids = explode(',', $_SESSION["cart"]);
-			if(!in_array($_POST["id"], $prod_ids)) {
-				$_SESSION["cart"] .= ",".$_POST["id"];
+			if(!in_array($post_id, $prod_ids)) {
+				$_SESSION["cart"] .= ",".$post_id;
 			}
 		}
 	} else if($_POST["action"] == "remove") {
 		$prod_ids = explode(',', $_SESSION["cart"]);
-		$prod_ids = array_diff($prod_ids, [$_POST["id"]]);
+		$prod_ids = array_diff($prod_ids, [$post_id]);
 		$_SESSION["cart"] = "";
 		$i = 0;
 		foreach ($prod_ids as $prod_id) {
