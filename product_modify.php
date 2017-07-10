@@ -5,14 +5,14 @@ session_start();
 if($_SESSION["admin"] != True) {
 	header("Location: /login.php");
 } else {
-	var_dump($_POST['id']);
-	var_dump($_POST['name']);
-	var_dump($_POST['price']);
-	var_dump($_POST['description']);
-	$id = $_POST['id'];
-	$name = $_POST['name'];
-	$price = $_POST['price'];
-	$description = $_POST['description'];
+	//var_dump($_POST['id']);
+	//var_dump($_POST['name']);
+	//var_dump($_POST['price']);
+	//var_dump($_POST['description']);
+	$id = (int)$_POST['id'];
+	$name = clean($_POST['name']);
+	$price = (int)$_POST['price'];
+	$description = clean($_POST['description']);
 	$values = "('".$name."',".$price.",'".$description."')";
 	var_dump($values);
 	if($_POST['id'] == "") {
