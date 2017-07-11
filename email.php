@@ -1,16 +1,12 @@
 <?php
-//var_dump($_POST['ordered_products']);
-//var_dump($_POST['client']);
-//var_dump($_POST['email']);
-//var_dump($_POST['details']);
-
-include_once('config.php');
-
+require_once('config.php');
+require_once('common.php');
+require_once('db_connect.php');
 session_start();
 
-$products = clean($_POST['ordered_products']);
-$client = clean($_POST['client']);
-$details = clean($_POST['details']);
+$products = $_POST['ordered_products'];
+$client = $_POST['client'];
+$details = $_POST['details'];
 $client_email = $_POST['email'];
 if(!filter_var($client_email, FILTER_VALIDATE_EMAIL)) {
 	header("Location: /mail_fail.php");
@@ -46,6 +42,6 @@ $headers .= "From: <".$client_email.">" . "\r\n";
 if(!mail($to,$subject,$message,$headers)) {
 	header("Location: /mail_fail.php");
 } else {
-	$_SESSION["cart"] = "";
+	$_SESSION["cart"] = [];
 	header("Location: /mail_success.php");
 }

@@ -1,58 +1,53 @@
 <?php
-require('config.php');
+require_once('config.php');
+require_once('common.php');
+require_once('db_connect.php');
 session_start();
 
 if($_SESSION["admin"] != True) {
-	header("Location: /login.php?fail=true");
+	header("Location: /login.php");
 } else {
-	//var_dump($_POST["action"]);
-	//var_dump($_POST["id"]);
-	$action = clean($_POST["action"]);
-	$id = (int)$_POST["id"];
-	if($action == "delete") {
-		$sql = "DELETE FROM products WHERE id=".$id;
-		$conn->query($sql);
-		header("Location: /admin.php");
-	}
-	if($action == "edit") {
-		$sql = 'SELECT id, name, price, description FROM products WHERE id='.$id;
-		$product = array();
-		//var_dump($products);
-		foreach ($conn->query($sql) as $row) {
-			//var_dump($product);
-			$product['id'] = $row['id'];
-			$product['name'] = $row['name'];
-			$product['price'] = $row['price'];
-			$product['description'] = $row['description'];
-			$edit = true;
-		}
-		var_dump($product);
-	} 
-	if($action == "add_new") {
-		$product['id'] = "";
+	$id = $_POST["id"];
+    $product = array();
+	if($id == "new") {
+        $product['id'] = "";
 		$product['name'] = "";
 		$product['price'] = "";
 		$product['description'] = "";
-		$edit = false;
-	}
+        $edit = false;
+	} else {
+        $stmt = $conn->prepare("SELECT id, name, price, description FROM products WHERE id = ?");
+        $id = (int)$id;
+        if($stmt->execute([$id])) {
+            $row = $stmt->fetch();
+            $product = $row;
+        }
+        $edit = true;
+    }
 }
+
 
 ?>
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Shop1 - Login</title>
+        <?php if($edit == true) { ?>
+        <title>Shop1 - Edit product</title>
+        <?php } else { ?>
+        <title>Shop1 - Add new product</title>
+        <?php } ?>
+		<link rel="stylesheet" type="text/css" href="/css/custom.css" />
 	</head>
 
 	<body>
 		<?php if($edit == true) { ?>
-			<h1>Shop1 - EDIT <?php echo $product['name'] ?></h1>
+        <h1>Shop1 - EDIT <?php echo $product['name'] ?></h1>
 		<?php } else { ?>
-			<h1>Shop1 - ADD NEW PRODUCT</h1>
+        <h1>Shop1 - ADD NEW PRODUCT</h1>
 		<?php } ?>
 
-		<form action="product_modify.php" method="post">
-			<input type="hidden" name="id" value="<?php echo $product['id'] ?>">
+		<form action="save.php" method="post">
+			<input type="hidden" name="id" value="<?php echo ($edit) ? $product['id'] : "new" ?>">
 			<label for="name">Name</label>
 			<input type="text" name="name" value="<?php echo $product['name'] ?>">
 			<br>
