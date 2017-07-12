@@ -28,7 +28,7 @@ if(isset($_GET["lang"])) {
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Shop1 - Home</title>
+	<title>Shop1 - <?php echo translate("Home"); ?></title>
 	<link rel="stylesheet" type="text/css" href="/css/custom.css" />
 </head>
 <body>
@@ -40,7 +40,7 @@ if(isset($_GET["lang"])) {
     <h1>Shop1 - simple PHP</h1>
     <p><?php echo translate("Home page"); ?> - <?php echo translate("product display"); ?></p>
     <?php if($_SESSION["admin"]): ?>
-    <a href="admin.php"><?php echo translate("Manage your products"); ?></a>
+    <a href="/admin.php"><?php echo translate("Manage your products"); ?></a>
     <?php endif; ?>
     <?php if(count($products) != 0): ?>
     <table class="product_table" style="width:100%">

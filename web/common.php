@@ -7,7 +7,8 @@ if(!isset($_SESSION["lang"])) {
     $_SESSION["lang"] = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
 }
 
-function translate($phrase) {
+function translate($phrase) 
+{
     global $ro_phrases, $de_phrases;
     if($_SESSION["lang"] == "de") {
         if(isset($de_phrases[$phrase])) {
