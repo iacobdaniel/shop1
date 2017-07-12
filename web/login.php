@@ -6,7 +6,7 @@ session_start();
 
 if($_SESSION["admin"] != true) {
 	if(isset($_POST["user"]) && isset($_POST["password"])) {
-		if($_POST["user"] == ADMIN_NAME && $_POST["password"] == ADMIN_PASS) {
+		if(strip_tags($_POST["user"]) == ADMIN_NAME && strip_tags($_POST["password"]) == ADMIN_PASS) {
 			$_SESSION["admin"] = true;
 		}
 	} 
@@ -20,13 +20,13 @@ if($_SESSION["admin"] != true) {
         <link rel="stylesheet" type="text/css" href="/css/custom.css" />
 	</head>
 	<body>
-        <?php if($_SESSION["admin"] == true) { ?>
+        <?php if($_SESSION["admin"]): ?>
         <h1>Shop1 - Logged in as ADMIN</h1>
         <h2>What to do next?</h2>
         <p>1. <a href="/admin.php">Manage your products</a></p>
         <p>2. <a href="/">Go to frontend page</a></p>
         <p>3. <a href="/logout.php">Logout</a></p>
-        <?php } else { ?>
+        <?php else: ?>
         <h1>Shop1 - Login</h1>
         <form action="login.php" method="post">
             <label for="user">Username: </label>
@@ -39,7 +39,6 @@ if($_SESSION["admin"] != true) {
             <br>
             <button type="submit">Login</button>
         </form>
-        <?php } ?>
+        <?php endif; ?>
 	</body>
-
 </html>

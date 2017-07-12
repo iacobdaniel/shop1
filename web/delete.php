@@ -10,7 +10,7 @@ if($_SESSION["admin"] != True) {
 } else {
 	$id = (int)$_POST["id"];
     $stmt = $conn->prepare("DELETE FROM products WHERE id = ?");
-    $stmt->execute(array($id));
+    $stmt->execute([$id]);
 	$_SESSION["cart"] = array_diff($_SESSION["cart"], [$id]);
     header("Location: /admin.php");
     exit();

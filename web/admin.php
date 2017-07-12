@@ -5,15 +5,19 @@ require_once('common.php');
 require_once('db_connect.php');
 session_start();
 
-if($_SESSION["admin"] == true) {
+if($_SESSION["admin"]) {
 	$sql = 'SELECT id, name, price, description FROM products ORDER BY id';
-	$products = array();
-	foreach ($conn->query($sql) as $row):
+	$products = [];
+	foreach ($conn->query($sql) as $row) {
 		$products[$row['id']] = $row;
-    endforeach;
+    }
 } else {
     header("Location: /login.php");
     exit();
+}
+$show_file_error = 0;
+if(isset($_GET['file_error'])) {
+    $show_file_error = $_GET['file_error'];
 }
 ?>
 <!DOCTYPE html>
@@ -26,6 +30,11 @@ if($_SESSION["admin"] == true) {
         <h1>Shop1 - ADMIN for your products</h1>
         <p>Modify, delete or add products</p>
         <a href="/logout.php">Logout</a>
+        <?php if($show_file_error == 1): ?>
+        <p class="file_upload_error_notif">Sorry, there was an error uploading your file.</p>
+        <?php elseif($show_file_error == 2): ?>
+        <p class="file_upload_error_notif2">No image selected.</p>
+        <?php endif; ?>
         <table class="product_table" style="width:100%">
             <tr>
                 <th>Image</th>
@@ -61,5 +70,4 @@ if($_SESSION["admin"] == true) {
             <button class="add_to_cart_btn" type="submit">Add new product</button>
         </form>
     </body>
-
 </html>

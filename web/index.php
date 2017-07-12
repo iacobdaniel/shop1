@@ -4,7 +4,7 @@ require_once('common.php');
 require_once('db_connect.php');
 session_start();
 
-$products = array();
+$products = [];
 
 if(count($_SESSION["cart"]) != 0) {
     $stmt = $conn->prepare("SELECT id, name, price, description FROM products WHERE id NOT IN(" . implode(',', array_fill(0, count($_SESSION["cart"]), '?')) . ")");
@@ -15,9 +15,13 @@ if(count($_SESSION["cart"]) != 0) {
 	}
 } else {
     $sql = 'SELECT id, name, price, description FROM products ORDER BY id';
-    foreach ($conn->query($sql) as $row):
+    foreach ($conn->query($sql) as $row) {
         $products[$row['id']] = $row;
-    endforeach;
+    }
+}
+
+if(isset($_GET["lang"])) {
+    $_SESSION["lang"] = strip_tags($_GET["lang"]);
 }
 
 ?>
@@ -29,25 +33,16 @@ if(count($_SESSION["cart"]) != 0) {
 </head>
 <body>
     <div class="language_container">
-        <form action="language.php" method="post">
-            <input type="hidden" name="lang" value="en">
-            <button class="lang_button" type="submit">EN</button>
-        </form>
-        <form action="language.php" method="post">
-            <input type="hidden" name="lang" value="ro">
-            <button class="lang_button" type="submit">RO</button>
-        </form>
-        <form action="language.php" method="post">
-            <input type="hidden" name="lang" value="de">
-            <button class="lang_button" type="submit">DE</button>
-        </form>
+        <a class="lang_button <?php echo $_SESSION["lang"]=="en" ? "selected" : "" ?>" href="/index.php?lang=en">EN</a>
+        <a class="lang_button <?php echo $_SESSION["lang"]=="ro" ? "selected" : "" ?>" href="/index.php?lang=ro">RO</a>
+        <a class="lang_button <?php echo $_SESSION["lang"]=="de" ? "selected" : "" ?>" href="/index.php?lang=de">DE</a>
     </div>
     <h1>Shop1 - simple PHP</h1>
-    <p><?php echo translate("Home page"); ?> - product display</p>
-    <?php if($_SESSION["admin"] == true) { ?>
-    <a href="admin.php">Manage your products</a>
-    <?php } ?>
-    <?php if(count($products) != 0) { ?>
+    <p><?php echo translate("Home page"); ?> - <?php echo translate("product display"); ?></p>
+    <?php if($_SESSION["admin"]): ?>
+    <a href="admin.php"><?php echo translate("Manage your products"); ?></a>
+    <?php endif; ?>
+    <?php if(count($products) != 0): ?>
     <table class="product_table" style="width:100%">
         <tr>
             <th><?php echo translate("Image"); ?></th>
@@ -72,10 +67,10 @@ if(count($_SESSION["cart"]) != 0) {
         </tr>
         <?php endforeach; ?>
     </table>
-    <?php } else { ?>
-    <h2><?php echo translate("All the products are already in the cart!"); ?> :)</h2>
-    <a href="/cart.php"><?php echo translate("See cart"); ?></a>
-    <?php } ?>
+    <a class="go_to_cart" href="/cart.php"><?php echo translate("See cart"); ?></a>
+    <?php else: ?>
+    <h2><?php echo translate("All the products are already in the cart or no products are available"); ?></h2>
+    <?php endif; ?>
 
 </body>
 </html>
