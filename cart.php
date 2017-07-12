@@ -4,7 +4,7 @@ require_once('common.php');
 require_once('db_connect.php');
 session_start();
 
-if(!empty($_POST)):
+if(isset($_POST)):
 	$post_id = (int)$_POST["id"];
 	if($_POST["action"] == "add") {
 		if(!in_array($post_id, $_SESSION["cart"])):
@@ -46,10 +46,10 @@ if(count($_SESSION["cart"]) != 0) {
 <?php } else { ?>
 <table class="product_table" style="width:100%">
 	<tr>
-		<th>Image</th>
-		<th>Product name</th> 
-		<th>Price</th>
-		<th>Description</th>
+		<th><?php echo translate("Image"); ?></th>
+        <th><?php echo translate("Product name"); ?></th> 
+        <th><?php echo translate("Price"); ?></th>
+        <th><?php echo translate("Description"); ?></th>
 		<th></th>
 	</tr>
 	<?php foreach ($products as $product):	?>
@@ -62,25 +62,25 @@ if(count($_SESSION["cart"]) != 0) {
 			<form action="cart.php" method="post">
 				<input type="hidden" name="action" value="remove">
 				<input type="hidden" name="id" value="<?php echo $product['id'] ?>">
-				<button class="add_to_cart_btn" type="submit">Remove from cart</button>
+				<button class="add_to_cart_btn" type="submit"><?php echo translate("Remove from cart"); ?></button>
 			</form>
 		</td>
 	</tr>
 	<?php endforeach; ?>
 </table>
-<h3>Order the stuff</h3>
+<h3><?php echo translate("Order the stuff"); ?></h3>
 <form action="email.php" method="post">
 	<input type="hidden" name="ordered_products" value="<?php echo $product_names; ?>">
-	<input required placeholder="Name" type="text" name="client">
+	<input required placeholder="<?php echo translate("Name"); ?>" type="text" name="client">
 	<br>
 	<br>
-	<input required placeholder="email" type="text" name="email">
+	<input required placeholder="<?php echo translate("email"); ?>" type="text" name="email">
 	<br>
 	<br>
-	<textarea placeholder="Other details..." name="details"></textarea>
+	<textarea placeholder="<?php echo translate("Other details..."); ?>" name="details"></textarea>
 	<br>
 	<br>
-	<button type="submit">Order now!</button>
+	<button type="submit"><?php echo translate("Order now!"); ?></button>
 </form>
 <?php } ?>
 </body>

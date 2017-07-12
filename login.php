@@ -5,7 +5,7 @@ require_once('db_connect.php');
 session_start();
 
 if($_SESSION["admin"] != true) {
-	if(!empty($_POST["user"]) && !empty($_POST["password"])) {
+	if(isset($_POST["user"]) && isset($_POST["password"])) {
 		if($_POST["user"] == ADMIN_NAME && $_POST["password"] == ADMIN_PASS) {
 			$_SESSION["admin"] = true;
 		}

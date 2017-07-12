@@ -19,6 +19,7 @@ if(count($_SESSION["cart"]) != 0) {
         $products[$row['id']] = $row;
     endforeach;
 }
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -27,19 +28,32 @@ if(count($_SESSION["cart"]) != 0) {
 	<link rel="stylesheet" type="text/css" href="/css/custom.css" />
 </head>
 <body>
-
+    <div class="language_container">
+        <form action="language.php" method="post">
+            <input type="hidden" name="lang" value="en">
+            <button class="lang_button" type="submit">EN</button>
+        </form>
+        <form action="language.php" method="post">
+            <input type="hidden" name="lang" value="ro">
+            <button class="lang_button" type="submit">RO</button>
+        </form>
+        <form action="language.php" method="post">
+            <input type="hidden" name="lang" value="de">
+            <button class="lang_button" type="submit">DE</button>
+        </form>
+    </div>
     <h1>Shop1 - simple PHP</h1>
-    <p>Home page - product display</p>
+    <p><?php echo translate("Home page"); ?> - product display</p>
     <?php if($_SESSION["admin"] == true) { ?>
     <a href="admin.php">Manage your products</a>
     <?php } ?>
     <?php if(count($products) != 0) { ?>
     <table class="product_table" style="width:100%">
         <tr>
-            <th>Image</th>
-            <th>Product name</th> 
-            <th>Price</th>
-            <th>Description</th>
+            <th><?php echo translate("Image"); ?></th>
+            <th><?php echo translate("Product name"); ?></th> 
+            <th><?php echo translate("Price"); ?></th>
+            <th><?php echo translate("Description"); ?></th>
             <th></th>
         </tr>
         <?php foreach ($products as $product): ?>
@@ -50,17 +64,17 @@ if(count($_SESSION["cart"]) != 0) {
             <td><?php echo $product['description'] ?></td>
             <td>
                 <form action="cart.php" method="post">
-                <input type="hidden" name="action" value="add">
-                <input type="hidden" name="id" value="<?php echo $product['id'] ?>">
-                <button class="add_to_cart_btn" type="submit">Add to cart</button>
+                    <input type="hidden" name="action" value="add">
+                    <input type="hidden" name="id" value="<?php echo $product['id'] ?>">
+                    <button class="add_to_cart_btn" type="submit"><?php echo translate("Add to cart"); ?></button>
                 </form>
             </td>
         </tr>
         <?php endforeach; ?>
     </table>
     <?php } else { ?>
-    <h2>All the products are already in the cart! :)</h2>
-    <a href="/cart.php">See cart</a>
+    <h2><?php echo translate("All the products are already in the cart!"); ?> :)</h2>
+    <a href="/cart.php"><?php echo translate("See cart"); ?></a>
     <?php } ?>
 
 </body>
