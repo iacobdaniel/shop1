@@ -4,31 +4,30 @@ require_once('common.php');
 require_once('db_connect.php');
 session_start();
 
-if(isset($_POST)) {
-	$post_id = (int)$_POST["id"];
-	if($_POST["action"] == "add") {
-		if(!in_array($post_id, $_SESSION["cart"])) {
-			$_SESSION["cart"][] = $post_id;
+if(isset($_POST["id"])) {
+    $post_id = (int)$_POST["id"];
+    if(isset($_POST["action"])) {
+        if($_POST["action"] == "add") {
+            if(!in_array($post_id, $_SESSION["cart"])) {
+                $_SESSION["cart"][] = $post_id;
+            }
+        } else if($_POST["action"] == "remove") {
+            $_SESSION["cart"] = array_diff($_SESSION["cart"], [$post_id]);
         }
-	} else if($_POST["action"] == "remove") {
-		$_SESSION["cart"] = array_diff($_SESSION["cart"], [$post_id]);
-	}
+    }
 }
 $products = [];
 if(count($_SESSION["cart"]) != 0) {
-	$stmt = $conn->prepare("SELECT id, name, price, description FROM products WHERE id IN(" . implode(',', array_fill(0, count($_SESSION["cart"]), '?')) . ")");
-	$product_names = "";
-	if($stmt->execute(array_values($_SESSION["cart"]))) {
-		while($row = $stmt->fetch()) {
-			$products[$row['id']] = $row;
-			$product_names = $product_names . $products[$row['id']]["name"] . ", ";
-		}
-		$product_names = substr($product_names, 0, -2);
-	} else {
-        print_r($conn->errorInfo());
+    $stmt = $conn->prepare("SELECT id, name, price, description FROM products WHERE id IN(" . implode(',', array_fill(0, count($_SESSION["cart"]), '?')) . ") ORDER BY id");
+    $product_names = [];
+    if($stmt->execute(array_values($_SESSION["cart"]))) {
+        while($row = $stmt->fetch()) {
+            $products[$row['id']] = $row;
+            $product_names[] = $row["name"];
+            $products[$row['id']]['image_file'] = glob("./products/" . (string)$row['id'] . ".*")[0];
+        }
     }
 }
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -52,7 +51,7 @@ if(count($_SESSION["cart"]) != 0) {
             </tr>
             <?php foreach ($products as $product):	?>
             <tr>
-                <td><img src="/products/<?php echo $product['id'] ?>.png"></td>
+                <td><img src="<?php echo $product['image_file'] ?>"></td>
                 <td><?php echo $product['name'] ?></td>
                 <td><?php echo $product['price'] ?></td>
                 <td><?php echo $product['description'] ?></td>
@@ -68,7 +67,7 @@ if(count($_SESSION["cart"]) != 0) {
         </table>
         <h3><?php echo translate("Order the stuff"); ?></h3>
         <form action="email.php" method="post">
-            <input type="hidden" name="ordered_products" value="<?php echo $product_names; ?>">
+            <input type="hidden" name="ordered_products" value="<?php echo implode(", ", $product_names); ?>">
             <input required placeholder="<?php echo translate("Name"); ?>" type="text" name="client">
             <br>
             <br>

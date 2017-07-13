@@ -4,22 +4,22 @@ require_once('common.php');
 require_once('db_connect.php');
 session_start();
 
-if($_SESSION["admin"] != true) {
-	if(isset($_POST["user"]) && isset($_POST["password"])) {
-		if(strip_tags($_POST["user"]) == ADMIN_NAME && strip_tags($_POST["password"]) == ADMIN_PASS) {
-			$_SESSION["admin"] = true;
-		}
-	} 
+if(!$_SESSION["admin"]) {
+    if(isset($_POST["user"]) && isset($_POST["password"])) {
+        if(strip_tags($_POST["user"]) == ADMIN_NAME && strip_tags($_POST["password"]) == ADMIN_PASS) {
+            $_SESSION["admin"] = true;
+        }
+    }
 }
 
 ?>
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Shop1 - Login</title>
+    <head>
+        <title>Shop1 - Login</title>
         <link rel="stylesheet" type="text/css" href="/css/custom.css" />
-	</head>
-	<body>
+    </head>
+    <body>
         <?php if($_SESSION["admin"]): ?>
         <h1>Shop1 - Logged in as ADMIN</h1>
         <h2>What to do next?</h2>
@@ -40,5 +40,5 @@ if($_SESSION["admin"] != true) {
             <button type="submit">Login</button>
         </form>
         <?php endif; ?>
-	</body>
+    </body>
 </html>

@@ -5,19 +5,16 @@ require_once('common.php');
 require_once('db_connect.php');
 session_start();
 
-if($_SESSION["admin"]) {
-	$sql = 'SELECT id, name, price, description FROM products ORDER BY id';
-	$products = [];
-	foreach ($conn->query($sql) as $row) {
-		$products[$row['id']] = $row;
-    }
-} else {
+if(!$_SESSION["admin"]) {
     header("Location: /login.php");
     exit();
-}
-$show_file_error = 0;
-if(isset($_GET['file_error'])) {
-    $show_file_error = $_GET['file_error'];
+} else {
+    $sql = 'SELECT id, name, price, description FROM products ORDER BY id';
+    $products = [];
+    foreach ($conn->query($sql) as $row) {
+        $products[$row['id']] = $row;
+        $products[$row['id']]['image_file'] = glob("./products/" . (string)$row['id'] . ".*")[0];
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -30,11 +27,6 @@ if(isset($_GET['file_error'])) {
         <h1>Shop1 - ADMIN for your products</h1>
         <p>Modify, delete or add products</p>
         <a href="/logout.php">Logout</a>
-        <?php if($show_file_error == 1): ?>
-        <p class="file_upload_error_notif">Sorry, there was an error uploading your file.</p>
-        <?php elseif($show_file_error == 2): ?>
-        <p class="file_upload_error_notif2">No image selected.</p>
-        <?php endif; ?>
         <table class="product_table" style="width:100%">
             <tr>
                 <th>Image</th>
@@ -46,7 +38,7 @@ if(isset($_GET['file_error'])) {
             </tr>
             <?php foreach ($products as $product): ?>
             <tr>
-                <td><img src="/products/<?php echo $product['id'] ?>.png"></td>
+                <td><img src="<?php echo $product['image_file'] ?>"></td>
                 <td><?php echo $product['name'] ?></td>
                 <td><?php echo $product['price'] ?></td>
                 <td><?php echo $product['description'] ?></td>

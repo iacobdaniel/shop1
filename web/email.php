@@ -35,10 +35,10 @@ $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 $headers .= "From: <".$client_email.">" . "\r\n";
 
 if(!mail($to,$subject,$message,$headers) || !filter_var($client_email, FILTER_VALIDATE_EMAIL)) {
-	$success = false;
+    $success = false;
 } else {
-	$_SESSION["cart"] = [];
-	$success = true;
+    $_SESSION["cart"] = [];
+    $success = true;
 }
 ?>
 
