@@ -34,27 +34,21 @@ if(!$_SESSION["admin"]) {
     if ($_FILES["image_upload"]["size"] > 250000) {
         $uploadOk = false;
     }
-    
     if($_POST['id'] == "new") {
-        
         if(!$uploadOk) {
             header("Location: /product.php?id=new&name=" . $name . "&price=" . $price . "&desc=" . $description);
             exit();
         }
-        
         $stmt = $conn->prepare("INSERT INTO products(name, price, description) VALUES (?,?,?)");
         $stmt->execute([$name, $price, $description]);
-        
         $stmt = $conn->query("SELECT LAST_INSERT_ID()");
         $id = $stmt->fetchColumn();
-        
     } else {
         $id = (int)$_POST['id'];
         if(!$uploadOk && $image) {
             header("Location: /product.php?id=" . $id . "&name=" . $name . "&price=" . $price . "&desc=" . $description);
             exit();
         }
-        
         $stmt = $conn->prepare("UPDATE products SET name = ?, price = ?, description = ? WHERE id = ?");
         $stmt->execute([$name, $price, $description, $id]);
     }

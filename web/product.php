@@ -11,9 +11,11 @@ if(!$_SESSION["admin"]) {
     $img_error = false;
     if(isset($_REQUEST["name"]) && isset($_REQUEST["price"]) && isset($_REQUEST["desc"])) {
         if(isset($_REQUEST["id"])) {
-            $product['id'] = $_REQUEST["id"];
-        } else {
-            $product['id'] = "";
+            if($_REQUEST["id"] == "new" || !is_numeric($_REQUEST["id"])) {
+                $product['id'] = "";
+            } else {
+                $product['id'] = (int)$_REQUEST["id"];
+            }
         }
         $product['name'] = strip_tags($_REQUEST["name"]);
         $product['price'] = (int)$_REQUEST["price"];
